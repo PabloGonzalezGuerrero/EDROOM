@@ -1,0 +1,324 @@
+[Version Actor SW]
+5
+0
+0
+0
+0
+[Modificado]
+1
+1
+0
+[Estructura]
+[Version Estructura]
+3
+[Parametro]
+NULL
+ 
+ 
+[FinParametro]
+[Stack]
+1
+[FinStack]
+[Puertos]
+2
+[Version Puerto]
+0
+DisplaysMngCtrl
+0
+1
+0
+[Version Grafico Puerto]
+0
+4
+41
+CPDisplaysMngCtrl
+[Version Puerto]
+0
+Timer
+0
+1
+1
+[Version Grafico Puerto]
+0
+39
+36
+EDROOMTimingSAP
+[FinPuertos]
+[ActoresComponente]
+0
+[FinActoresComponente]
+[Uniones]
+0
+[FinUniones]
+[NumTimers]
+2
+[FinNumTimers]
+[NumMsgDef]
+10
+[FinNumMsgDef]
+[FinEstructura]
+[Comportamiento]
+[Version Comportamiento]
+3
+0
+[Pools]
+0
+[Modulos]
+2
+[Version Modulo]
+1
+leon3_uart_drv
+
+v1
+
+1
+0
+[Version Modulo]
+1
+nexys_gpio_drv
+
+v1
+
+1
+0
+[Eventos]
+1
+[Event]
+[Version]
+1
+EvTimerTimer
+Timer
+[Maquina de Estados]
+[Version Maquina de Estados]
+1
+Top
+NULL
+[Subestados]
+3
+[Version SubEstados]
+3
+I
+;
+;
+;
+;
+;
+0
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+73 73 55 55
+[FinObjetoGrafico]
+Idle
+;
+;
+;
+;
+;
+1
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+166 150 90 60
+[FinObjetoGrafico]
+Ready
+FRefreshDisplays();
+;
+;
+;
+;
+1
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+295 241 186 121
+[FinObjetoGrafico]
+[PuntosEleccion]
+0
+[Version PuntosEleccion]
+2
+[Transiciones]
+4
+[Version Transicion]
+5
+Init
+I
+OSubEstI
+Idle
+DSubEst
+;
+[Trigger]
+EDROOMsl
+EDROOMStart
+true
+ 
+ 
+ 
+;
+;
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+122 114 166 162 0
+[FinGraficoTransicion]
+Start
+Idle
+OSubEst
+Ready
+DSubEst
+FProgDisplaysRefresh();
+[Trigger]
+DisplaysMngCtrl
+SDisplaysStart
+true
+ 
+ 
+ 
+;
+FSendDisplaysReady();
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+256 196 315 241 0
+[FinGraficoTransicion]
+RefreshDisplay
+Ready
+OSubEst
+Ready
+DSubEst
+FProgDisplaysRefresh();
+[Trigger]
+Timer
+EDROOMSignalTimeout
+true
+ 
+ 
+ 
+;
+;
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+328 362 433 362 5
+[FinGraficoTransicion]
+IncreaseDisplays
+Ready
+OSubEst
+Ready
+DSubEst
+FIncreaseDisplays();
+[Trigger]
+DisplaysMngCtrl
+SIncreaseDisplays
+true
+ 
+ 
+ 
+;
+;
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+481 258 481 333 7
+[FinGraficoTransicion]
+[VariablesConstantes]
+1
+[Version VariYConst]
+0
+VDisplays7SegValue
+TEDROOMUInt8
+
+Variable
+8
+[Metodos]
+4
+[Version Metodos]
+21
+Inform
+FProgDisplaysRefresh()
+0
+0
+0
+0
+1
+
+8
+	 
+	//Timing Service useful methods
+	 
+	//time.GetTime(); // Get current monotonic time
+	//time.Add(X,Y); // Add X sec + Y microsec
+
+interval = Pr_Time(0,1000); // interval of X sec + Y microsec
+
+[ServiceRequest]
+InformAt
+Timer
+EDROOMSignalTimeout
+NULL
+EDROOMprioNormal
+SendMsg
+FSendDisplaysReady()
+0
+0
+0
+0
+1
+
+5
+
+for(uint8_t i=0; i < 8 ; i++)
+	VDisplays7SegValue[i]=0;
+ 
+nexys_srg_gpio_set_7seg_digit(7, 0) ;
+[ServiceRequest]
+send
+DisplaysMngCtrl
+SDisplaysReady
+NULL
+EDROOMprioNormal
+BasicAction
+FRefreshDisplays()
+0
+0
+0
+0
+1
+
+4
+
+for(uint16_t i=0; i < 1000 ; i++ )
+	nexys_srg_gpio_seg_7seg_array(8,VDisplays7SegValue);
+
+BasicAction
+FIncreaseDisplays()
+0
+0
+0
+0
+1
+
+3
+
+nexys_srg_gpio_increase_seg_7seg_array(VDisplays7SegValue);
+
+[MaquinasSubEstados]
+0
+[FinMaquinasSubEstados]
+[Fin Maquina de Estados]
+[FinComportamiento]

@@ -1,0 +1,577 @@
+[Version Actor SW]
+5
+0
+0
+0
+0
+[Modificado]
+1
+1
+0
+[Estructura]
+[Version Estructura]
+3
+[Parametro]
+NULL
+ 
+ 
+[FinParametro]
+[Stack]
+1
+[FinStack]
+[Puertos]
+3
+[Version Puerto]
+0
+LEDMngCtrl
+1
+1
+0
+[Version Grafico Puerto]
+0
+93
+25
+CPLEDMngCtrl
+[Version Puerto]
+0
+DisplaysMngCtrl
+1
+1
+0
+[Version Grafico Puerto]
+0
+93
+67
+CPDisplaysMngCtrl
+[Version Puerto]
+0
+SerialCommand
+0
+1
+1
+[Version Grafico Puerto]
+0
+38
+42
+CPSerialCommand
+[FinPuertos]
+[ActoresComponente]
+0
+[FinActoresComponente]
+[Uniones]
+0
+[FinUniones]
+[NumTimers]
+0
+[FinNumTimers]
+[NumMsgDef]
+10
+[FinNumMsgDef]
+[FinEstructura]
+[Comportamiento]
+[Version Comportamiento]
+3
+0
+[Pools]
+1
+[Version PoolDatosMens]
+0
+EDROOMPoolTEDROOMInt8
+TEDROOMInt8
+10
+[Modulos]
+2
+[Version Modulo]
+1
+leon3_uart_drv
+
+v1
+
+1
+0
+[Version Modulo]
+1
+nexys_gpio_drv
+
+v1
+
+1
+0
+[Eventos]
+1
+[Event]
+[Version]
+1
+EvIRQSerialCommand
+External
+[Maquina de Estados]
+[Version Maquina de Estados]
+1
+Top
+NULL
+[Subestados]
+3
+[Version SubEstados]
+3
+I
+;
+;
+;
+;
+;
+0
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+73 73 55 55
+[FinObjetoGrafico]
+StartUp
+;
+;
+;
+;
+;
+1
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+142 175 90 60
+[FinObjetoGrafico]
+Ready
+;
+;
+;
+;
+;
+1
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+140 319 90 208
+[FinObjetoGrafico]
+[PuntosEleccion]
+1
+[Version PuntosEleccion]
+2
+GetCommand
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+330 390 35 35
+[FinObjetoGrafico]
+GetCommand
+0
+[Ramas]
+3
+[Version Ramas]
+5
+NotValidCommand
+true
+Ready
+DSubEst
+;
+
+ 
+
+;
+;
+;
+;
+[GraficoRama]
+[Version GraficoRama]
+0
+347 390 230 358 3
+[FinGraficoRama]
+ToggleLEDShift
+GCmdIsToggleLEDShift()
+Ready
+DSubEst
+;
+
+ 
+
+;
+;
+FInvokeToogleLEDShift();
+;
+[GraficoRama]
+[Version GraficoRama]
+0
+336 420 230 458 2
+[FinGraficoRama]
+IncreaseDisplays
+GCmdIsIncreaseDisplays()
+Ready
+DSubEst
+;
+
+ 
+
+;
+FSendIncreaseDisplays();
+;
+;
+[GraficoRama]
+[Version GraficoRama]
+0
+347 424 230 499 2
+[FinGraficoRama]
+[Transiciones]
+3
+[Version Transicion]
+5
+Init
+I
+OSubEstI
+StartUp
+DSubEst
+FInit();
+[Trigger]
+*
+SDisplaysReady
+true
+ 
+ 
+ 
+;
+;
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+118 119 171 175 0
+[FinGraficoTransicion]
+SubSysReady
+StartUp
+OSubEst
+Ready
+DSubEst
+;
+[Trigger]
+DisplaysMngCtrl
+SDisplaysReady
+true
+ 
+ 
+ 
+;
+;
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+182 235 182 319 2
+[FinGraficoTransicion]
+GetCommand
+Ready
+OSubEst
+GetCommand
+DPEleccion
+;
+[Trigger]
+SerialCommand
+EDROOMIRQsignal
+true
+ 
+ 
+ 
+FGetCommand();
+;
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+230 400 330 407 0
+[FinGraficoTransicion]
+[VariablesConstantes]
+2
+[Version VariYConst]
+0
+CLEDPerido100Ms
+TEDROOMUInt8
+1
+Constante
+0
+[Version VariYConst]
+0
+VCommand
+TEDROOMByte
+'z'
+Variable
+0
+[Metodos]
+6
+[Version Metodos]
+21
+BasicAction
+FInit()
+0
+0
+0
+0
+1
+ 
+12
+SerialCommand.MaskIRQ();
+ 
+SerialCommand.InstallHandler();
+ 
+leon3_uart_ctrl_rx_irq_enable();
+leon3_uart_ctrl_rx_enable();
+ 
+SerialCommand.UnMaskIRQ();
+ 
+nexys_srg_gpio_init_buttons_switches();
+ 
+nexys_srg_gpio_init_leds_7segs_displays();
+MsgDataHandler
+FGetCommand()
+0
+0
+0
+0
+1
+
+8
+	
+		// Data access
+	
+	// ... =varEDROOMIRQsignal;
+    
+ // Data access
+	
+ VCommand=varEDROOMIRQsignal;
+[ServiceRequest]
+Msg->data
+SerialCommand
+EDROOMIRQsignal
+TEDROOMByte
+EDROOMprioNormal
+Guard
+GCmdIsIncreaseDisplays()
+0
+0
+0
+0
+1
+
+3
+
+return (('i'==VCommand) || ('I'==VCommand));
+
+SendMsg
+FSendIncreaseDisplays()
+0
+0
+0
+0
+1
+
+0
+[ServiceRequest]
+send
+DisplaysMngCtrl
+SDisplaysStart
+NULL
+EDROOMprioNormal
+Guard
+GCmdIsToggleLEDShift()
+0
+0
+0
+0
+1
+
+2
+
+return (('t'==VCommand) || ('T'==VCommand));
+InvokeMsg
+FInvokeToogleLEDShift()
+0
+0
+0
+0
+1
+
+0
+[ServiceRequest]
+invoke
+LEDMngCtrl
+SToggleLEDShift
+NULL
+EDROOMprioVeryHigh
+[MaquinasSubEstados]
+1
+StartUp
+[Maquina de Estados]
+[Version Maquina de Estados]
+1
+StartUp
+Top
+[Subestados]
+2
+[Version SubEstados]
+3
+WaitLEDReady
+;
+;
+;
+;
+;
+0
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+197 199 90 60
+[FinObjetoGrafico]
+WaitDisplaysReady
+;
+;
+;
+;
+;
+0
+0
+[ObjetoGrafico]
+[Version Objeto Grafico]
+0
+226 401 90 60
+[FinObjetoGrafico]
+[PuntosEleccion]
+0
+[Version PuntosEleccion]
+2
+[Transiciones]
+3
+[Version Transicion]
+5
+StartLED
+Init
+OPEntrada
+WaitLEDReady
+DSubEst
+;
+[Trigger]
+*
+SDisplaysReady
+true
+ 
+ 
+ 
+;
+FSendLEDStart();
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+244 70 242 199 2
+[FinGraficoTransicion]
+StartDisplay
+WaitLEDReady
+OSubEst
+WaitDisplaysReady
+DSubEst
+;
+[Trigger]
+LEDMngCtrl
+SLEDReady
+true
+ 
+ 
+ 
+;
+FSendDisplaysStart();
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+250 259 258 401 0
+[FinGraficoTransicion]
+DisplaysReady
+WaitDisplaysReady
+OSubEst
+SubSysReady
+DPSalida
+;
+[Trigger]
+DisplaysMngCtrl
+SDisplaysReady
+true
+ 
+ 
+ 
+;
+;
+;
+0
+;
+[GraficoTransicion]
+[Version GraficoTransicion]
+0
+273 461 325 698 0
+[FinGraficoTransicion]
+[VariablesConstantes]
+0
+[Metodos]
+2
+[Version Metodos]
+21
+SendMsg
+FSendLEDStart()
+0
+0
+0
+0
+1
+
+7
+	
+		// Complete Data 
+	
+	*pSLEDStart_Data=
+		// Complete Data 
+	
+*pSLEDStart_Data=CLEDPeriod100Ms;
+[ServiceRequest]
+send
+LEDMngCtrl
+SLEDStart
+TEDROOMInt8
+EDROOMprioNormal
+SendMsg
+FSendDisplaysStart()
+0
+0
+0
+0
+1
+
+0
+[ServiceRequest]
+send
+DisplaysMngCtrl
+SDisplaysStart
+NULL
+EDROOMprioNormal
+[MaquinasSubEstados]
+0
+[FinMaquinasSubEstados]
+[Fin Maquina de Estados]
+[FinMaquinasSubEstados]
+[Fin Maquina de Estados]
+[FinComportamiento]
