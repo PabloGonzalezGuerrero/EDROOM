@@ -5,8 +5,8 @@
 0
 0
 [Modificado]
-1
-1
+0
+0
 0
 [Estructura]
 [Version Estructura]
@@ -68,19 +68,19 @@ EDROOMTimingSAP
 [Version Modulo]
 1
 nexys_gpio_drv
-
+ 
 v1
-
+ 
 1
-0
+1
 [Version Modulo]
 1
 leon3_uart_drv
-
+ 
 v1
-
+ 
 1
-0
+1
 [Eventos]
 1
 [Event]
@@ -240,9 +240,30 @@ FReplyLEDShiftToggled();
 6
 [Version VariYConst]
 0
-VTimeRef
-Pr_Time
-
+CMaxShiftPeriodMicrosecs
+TEDROOMUInt32
+900000
+Constante
+0
+[Version VariYConst]
+0
+CMinShiftPeriodMicrosecs
+TEDROOMUInt32
+100000
+Constante
+0
+[Version VariYConst]
+0
+VLEDPos
+TEDROOMUInt8
+0
+Variable
+0
+[Version VariYConst]
+0
+VShiftDirection
+TEDROOMBool
+0
 Variable
 0
 [Version VariYConst]
@@ -254,36 +275,23 @@ Variable
 0
 [Version VariYConst]
 0
-CMinShiftPeriodMicrosecs
-TEDROOMUInt32
-100000
-Constante
-0
-[Version VariYConst]
-0
-CMaxShiftPeriodMicrosecs
-TEDROOMUInt32
-900000
-Constante
-0
-[Version VariYConst]
-0
-VShiftDirection
-TEDROOMBool
-0
-Variable
-0
-[Version VariYConst]
-0
-VLEDPos
-TEDROOMUInt8
-0
+VTimeRef
+Pr_Time
+
 Variable
 0
 [Metodos]
 6
 [Version Metodos]
 21
+CompositeAction
+FCShiftTimeout()
+0
+0
+0
+2
+FShiftLEDs();
+FProgShift();
 MsgDataHandler
 FGetShiftPeriod()
 0
@@ -291,7 +299,7 @@ FGetShiftPeriod()
 0
 0
 1
-
+ 
 18
 	
 		// Data access
@@ -310,7 +318,7 @@ else if (varSLEDStart < CMinShiftPeriodMicrosecs)
  
 //Get Time reference
 VTimeRef.GetTime();
-
+ 
 [ServiceRequest]
 Msg->data
 LEDMngCtrl
@@ -324,7 +332,7 @@ FProgShift()
 0
 0
 1
-
+ 
 10
 	 
 	//Timing Service useful methods
@@ -335,13 +343,30 @@ FProgShift()
  VTimeRef+=Pr_Time(0,VShiftPeriodMicrosecs); // interval of X sec + Y microsec	 
   
  time= VTimeRef;
-
+ 
 [ServiceRequest]
 InformAt
 Timer
 EDROOMSignalTimeout
 TEDROOMInt8
 EDROOMprioNormal
+ReplyMsg
+FReplyLEDShiftToggled()
+0
+0
+0
+0
+1
+ 
+2
+ 
+VShiftDirection=!VShiftDirection;
+[ServiceRequest]
+Msg->reply
+LEDMngCtrl
+SLEDShiftToggled
+NULL
+EDROOMprioVeryHigh
 SendMsg
 FSendLEDReady()
 0
@@ -349,7 +374,7 @@ FSendLEDReady()
 0
 0
 1
-
+ 
 0
 [ServiceRequest]
 send
@@ -364,7 +389,7 @@ FShiftLEDs()
 0
 0
 1
-
+ 
 15
 nexys_srg_gpio_turn_off_led(VLEDPos);
  
@@ -380,32 +405,7 @@ if(VShiftDirection){
 }
  
 nexys_srg_gpio_turn_on_led(VLEDPos);
-
-CompositeAction
-FCShiftTimeout()
-0
-0
-0
-2
-FShiftLEDs();
-FProgShift();
-ReplyMsg
-FReplyLEDShiftToggled()
-0
-0
-0
-0
-1
-
-2
-
-VShiftDirection=!VShiftDirection;
-[ServiceRequest]
-Msg->reply
-LEDMngCtrl
-SLEDShiftToggled
-NULL
-EDROOMprioVeryHigh
+ 
 [MaquinasSubEstados]
 0
 [FinMaquinasSubEstados]

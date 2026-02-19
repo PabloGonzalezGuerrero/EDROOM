@@ -5,8 +5,8 @@
 0
 0
 [Modificado]
-1
-1
+0
+0
 0
 [Estructura]
 [Version Estructura]
@@ -84,19 +84,19 @@ TEDROOMInt8
 [Version Modulo]
 1
 leon3_uart_drv
-
+ 
 v1
-
+ 
 1
-0
+1
 [Version Modulo]
 1
 nexys_gpio_drv
-
+ 
 v1
-
+ 
 1
-0
+1
 [Eventos]
 1
 [Event]
@@ -174,9 +174,9 @@ true
 Ready
 DSubEst
 ;
-
  
-
+ 
+ 
 ;
 ;
 ;
@@ -191,9 +191,9 @@ GCmdIsToggleLEDShift()
 Ready
 DSubEst
 ;
-
  
-
+ 
+ 
 ;
 ;
 FInvokeToogleLEDShift();
@@ -208,9 +208,9 @@ GCmdIsIncreaseDisplays()
 Ready
 DSubEst
 ;
-
  
-
+ 
+ 
 ;
 FSendIncreaseDisplays();
 ;
@@ -313,6 +313,29 @@ Variable
 6
 [Version Metodos]
 21
+MsgDataHandler
+FGetCommand()
+0
+0
+0
+0
+1
+ 
+8
+	
+		// Data access
+	
+	// ... =varEDROOMIRQsignal;
+    
+ // Data access
+	
+ VCommand=varEDROOMIRQsignal;
+[ServiceRequest]
+Msg->data
+SerialCommand
+EDROOMIRQsignal
+TEDROOMByte
+EDROOMprioNormal
 BasicAction
 FInit()
 0
@@ -334,41 +357,21 @@ SerialCommand.UnMaskIRQ();
 nexys_srg_gpio_init_buttons_switches();
  
 nexys_srg_gpio_init_leds_7segs_displays();
-MsgDataHandler
-FGetCommand()
+InvokeMsg
+FInvokeToogleLEDShift()
 0
 0
 0
 0
 1
-
-8
-	
-		// Data access
-	
-	// ... =varEDROOMIRQsignal;
-    
- // Data access
-	
- VCommand=varEDROOMIRQsignal;
+ 
+0
 [ServiceRequest]
-Msg->data
-SerialCommand
-EDROOMIRQsignal
-TEDROOMByte
-EDROOMprioNormal
-Guard
-GCmdIsIncreaseDisplays()
-0
-0
-0
-0
-1
-
-3
-
-return (('i'==VCommand) || ('I'==VCommand));
-
+invoke
+LEDMngCtrl
+SToggleLEDShift
+NULL
+EDROOMprioVeryHigh
 SendMsg
 FSendIncreaseDisplays()
 0
@@ -376,7 +379,7 @@ FSendIncreaseDisplays()
 0
 0
 1
-
+ 
 0
 [ServiceRequest]
 send
@@ -385,31 +388,28 @@ SDisplaysStart
 NULL
 EDROOMprioNormal
 Guard
+GCmdIsIncreaseDisplays()
+0
+0
+0
+0
+1
+ 
+3
+ 
+return (('i'==VCommand) || ('I'==VCommand));
+ 
+Guard
 GCmdIsToggleLEDShift()
 0
 0
 0
 0
 1
-
+ 
 2
-
+ 
 return (('t'==VCommand) || ('T'==VCommand));
-InvokeMsg
-FInvokeToogleLEDShift()
-0
-0
-0
-0
-1
-
-0
-[ServiceRequest]
-invoke
-LEDMngCtrl
-SToggleLEDShift
-NULL
-EDROOMprioVeryHigh
 [MaquinasSubEstados]
 1
 StartUp
@@ -532,13 +532,28 @@ true
 [Version Metodos]
 21
 SendMsg
+FSendDisplaysStart()
+0
+0
+0
+0
+1
+ 
+0
+[ServiceRequest]
+send
+DisplaysMngCtrl
+SDisplaysStart
+NULL
+EDROOMprioNormal
+SendMsg
 FSendLEDStart()
 0
 0
 0
 0
 1
-
+ 
 7
 	
 		// Complete Data 
@@ -552,21 +567,6 @@ send
 LEDMngCtrl
 SLEDStart
 TEDROOMInt8
-EDROOMprioNormal
-SendMsg
-FSendDisplaysStart()
-0
-0
-0
-0
-1
-
-0
-[ServiceRequest]
-send
-DisplaysMngCtrl
-SDisplaysStart
-NULL
 EDROOMprioNormal
 [MaquinasSubEstados]
 0

@@ -5,8 +5,8 @@
 0
 0
 [Modificado]
-1
-1
+0
+0
 0
 [Estructura]
 [Version Estructura]
@@ -68,19 +68,19 @@ EDROOMTimingSAP
 [Version Modulo]
 1
 leon3_uart_drv
-
+ 
 v1
-
+ 
 1
-0
+1
 [Version Modulo]
 1
 nexys_gpio_drv
-
+ 
 v1
-
+ 
 1
-0
+1
 [Eventos]
 1
 [Event]
@@ -249,6 +249,18 @@ Variable
 4
 [Version Metodos]
 21
+BasicAction
+FIncreaseDisplays()
+0
+0
+0
+0
+1
+ 
+3
+ 
+nexys_srg_gpio_increase_seg_7seg_array(VDisplays7SegValue);
+ 
 Inform
 FProgDisplaysRefresh()
 0
@@ -256,22 +268,35 @@ FProgDisplaysRefresh()
 0
 0
 1
-
+ 
 8
 	 
 	//Timing Service useful methods
 	 
 	//time.GetTime(); // Get current monotonic time
 	//time.Add(X,Y); // Add X sec + Y microsec
-
+ 
 interval = Pr_Time(0,1000); // interval of X sec + Y microsec
-
+ 
 [ServiceRequest]
 InformAt
 Timer
 EDROOMSignalTimeout
 NULL
 EDROOMprioNormal
+BasicAction
+FRefreshDisplays()
+0
+0
+0
+0
+1
+ 
+4
+ 
+for(uint16_t i=0; i < 1000 ; i++ )
+	nexys_srg_gpio_seg_7seg_array(8,VDisplays7SegValue);
+ 
 SendMsg
 FSendDisplaysReady()
 0
@@ -279,9 +304,9 @@ FSendDisplaysReady()
 0
 0
 1
-
+ 
 5
-
+ 
 for(uint8_t i=0; i < 8 ; i++)
 	VDisplays7SegValue[i]=0;
  
@@ -292,31 +317,6 @@ DisplaysMngCtrl
 SDisplaysReady
 NULL
 EDROOMprioNormal
-BasicAction
-FRefreshDisplays()
-0
-0
-0
-0
-1
-
-4
-
-for(uint16_t i=0; i < 1000 ; i++ )
-	nexys_srg_gpio_seg_7seg_array(8,VDisplays7SegValue);
-
-BasicAction
-FIncreaseDisplays()
-0
-0
-0
-0
-1
-
-3
-
-nexys_srg_gpio_increase_seg_7seg_array(VDisplays7SegValue);
-
 [MaquinasSubEstados]
 0
 [FinMaquinasSubEstados]
